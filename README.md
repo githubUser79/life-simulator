@@ -1,113 +1,113 @@
 # Evolution Life Simulator
 
-Ein browserbasierter Evolutions-Simulator mit neuronalen Netzwerken, prozeduralem Terrain und KI-gesteuertem Balancing.
+A browser-based evolution simulator featuring neural networks, procedural terrain, and AI-powered ecosystem balancing.
 
-Drei Spezies — **Predatoren**, **Omnivoren** und **Prey** — entwickeln ihre Gehirne (NEAT Neural Networks) über Generationen weiter, um in einer dynamischen Welt zu überleben. Ein lokales LLM (Ollama) beobachtet das Ökosystem und passt die Balance-Parameter automatisch an.
+Three species — **Predators**, **Omnivores**, and **Prey** — evolve their brains (NEAT Neural Networks) across generations to survive in a dynamic world. A local LLM (Ollama) observes the ecosystem and automatically adjusts balance parameters in a self-improving feedback loop.
 
 ## Inspiration
 
-Dieses Projekt wurde inspiriert von diesem Video:
+This project was inspired by this video:
 
-**[Evolving AIs - Predator vs Prey, beleuchtet von Pezzzottaite](https://www.youtube.com/watch?v=dyvqH7v6V0E&t=396s)**
+**[Evolving AIs - Predator vs Prey by Pezzzottaite](https://www.youtube.com/watch?v=dyvqH7v6V0E&t=396s)**
 
-Die grundlegende Idee — Kreaturen mit neuronalen Netzwerken in einer 2D-Welt gegeneinander antreten zu lassen und ihre Evolution zu beobachten — stammt aus diesem Video. Dieses Projekt erweitert das Konzept um eine dritte Spezies, Terrain-Biome, Pheromone, evolvierbare Traits und KI-gestütztes Balancing.
+The core idea — letting creatures with neural networks compete in a 2D world and observing their evolution — originates from this video. This project extends the concept with a third species, terrain biomes, pheromone trails, evolvable traits, and LLM-powered balancing.
 
 ## Features
 
-### Drei-Spezies-Ökosystem
+### Three-Species Ecosystem
 
-| Spezies | Farbe | Frisst | Wird gefressen von |
+| Species | Color | Eats | Eaten by |
 |---|---|---|---|
-| **Prey** | Blau/Cyan | Pflanzen | Predatoren, Omnivoren |
-| **Omnivore** | Gelb/Orange | Pflanzen, Prey, Predatoren | Predatoren |
-| **Predator** | Rot/Pink | Prey, Omnivoren, FoodDrops | Omnivoren |
+| **Prey** | Blue/Cyan | Plants | Predators, Omnivores |
+| **Omnivore** | Yellow/Orange | Plants, Prey, Predators | Predators |
+| **Predator** | Red/Pink | Prey, Omnivores, FoodDrops | Omnivores |
 
-Kein Kannibalismus — keine Spezies frisst ihre eigene Art.
+No cannibalism — no species eats its own kind.
 
-### Neuronale Netzwerke (NEAT)
+### Neural Networks (NEAT)
 
-Jede Kreatur hat ein eigenes neuronales Netzwerk mit:
+Each creature has its own neural network with:
 
-- **28 Inputs**: Gesundheit, Energie, Split-Bereitschaft, Reserve, 5 Sichtzonen (je Distanz/Winkel/Attraktivität), 6 gerichtete Geruchsgradienten, Tageszeit, Terrain-Typ, eigene Geschwindigkeit
-- **3 Outputs**: Drehung, Geschwindigkeit, Pheromon-Emission
-- **Adaptive Mutation**: Erfolgreiche Genome werden geschützt (Elitismus), schwache mutieren aggressiver
-- **Crossover**: 20% Chance bei Reproduktion — zwei nahe, fitte Kreaturen gleicher Art kombinieren ihre Genome
+- **28 Inputs**: Health, energy, split readiness, reserve, 5 vision zones (distance/angle/attractiveness each), 6 directional smell gradients, daylight, terrain type, own speed
+- **3 Outputs**: Turning, speed, pheromone emission
+- **Adaptive Mutation**: Successful genomes are protected (elitism), weak ones mutate more aggressively
+- **Crossover**: 20% chance during reproduction — two nearby, fit creatures of the same species combine their genomes (NEAT-style)
 
-### Evolvierbare Traits
+### Evolvable Traits
 
-| Trait | Effekt | Kosten |
+| Trait | Effect | Cost |
 |---|---|---|
-| **Toxicity** | Vergiftet Angreifer beim Fressen | Energiekosten |
-| **Poison Resistance** | Reduziert Giftschaden | Energiekosten |
-| **Defense** | Chance, dem Angreifer Schaden zuzufügen | Energiekosten |
+| **Toxicity** | Poisons the attacker when eaten | Energy drain |
+| **Poison Resistance** | Reduces incoming poison damage | Energy drain |
+| **Defense** | Chance to deal damage back to the attacker | Energy drain |
 
-Traits werden bei Teilung vererbt und mutieren leicht. Evolution findet die optimale Balance zwischen Schutz und Energieverbrauch.
+Traits are inherited during reproduction and mutate slightly. Evolution finds the optimal balance between protection and energy cost.
 
-### Terrain & Biome
+### Terrain & Biomes
 
-4 prozedural generierte Biome:
+4 procedurally generated biomes:
 
-| Biome | Geschwindigkeit | Sichtweite | Pflanzen |
+| Biome | Speed | Vision | Plants |
 |---|---|---|---|
-| **Grasland** | 1.0x | 1.0x | Normal |
-| **Wald** | 0.8x | 0.6x | 3x mehr |
-| **Wüste** | 1.2x | 1.2x | Kaum |
-| **Wasser** | 0.5x | 0.8x | Keine |
+| **Grassland** | 1.0x | 1.0x | Normal |
+| **Forest** | 0.8x | 0.6x | 3x more |
+| **Desert** | 1.2x | 1.2x | Scarce |
+| **Water** | 0.5x | 0.8x | None |
 
-### Pheromone / Duftspuren
+### Pheromones / Scent Trails
 
-Drei Pheromon-Kanäle auf einem Diffusions-Grid:
+Three pheromone channels on a diffusion grid:
 
-- **Danger**: Prey senden Alarm wenn angegriffen — warnt andere Prey
-- **Territory**: Predatoren markieren ihr Revier
-- **Scent**: Omnivoren hinterlassen Duftspuren
+- **Danger**: Prey emit alarm signals when attacked — warns other prey
+- **Territory**: Predators mark their hunting grounds
+- **Scent**: Omnivores leave scent trails
 
-Kreaturen riechen **gerichtet** (vorwärts/seitlich) und entscheiden über ihr NN aktiv, ob sie Pheromone abgeben.
+Creatures smell **directionally** (forward/lateral gradients) and actively decide via their NN whether to emit pheromones.
 
-### Tag/Nacht-Zyklus
+### Day/Night Cycle
 
-- 3000 Ticks pro Zyklus
-- Nachts: Welt wird dunkler, Sichtweite halbiert
-- Kreaturen müssen mit eingeschränkter Wahrnehmung klarkommen
+- 3000 ticks per full cycle
+- At night: world darkens, vision range halved
+- Creatures must cope with reduced perception
 
-### KI-Steuerung (Ollama)
+### AI Control (Ollama)
 
 #### AI Auto-Balancer
-- Analysiert alle 1000 Ticks das Ökosystem via Ollama (gemma3:12b)
-- Drei-Spezies-Gleichgewicht mit konfigurierbaren Zielwerten
-- **Self-Improving Loop**: Bewertet vorherige Entscheidungen (HELPED/HURT/NEUTRAL) und lernt daraus
-- Einstellbare Ziel-Populationen mit +/-20% Toleranz
+- Analyzes the ecosystem every 1000 ticks via Ollama (gemma3:12b)
+- Three-species equilibrium with configurable target populations
+- **Self-Improving Loop**: Scores previous decisions (HELPED/HURT/NEUTRAL) and learns from outcomes
+- Adjustable target populations with +/-20% tolerance
 
-#### AI Kommentator
-- Sarkastischer Naturfilm-Erzähler auf Deutsch
-- Kommentiert alle 60 Sekunden das Geschehen
-- Erkennt besondere Ereignisse (Massensterben, Babyboom, Balance)
-- Vision-Modus: Sendet alle 3 Minuten einen Screenshot an ein Vision-Modell
-- Dient gleichzeitig als Ollama Keep-Alive (verhindert Model-Unload)
+#### AI Commentator
+- Sarcastic nature documentary narrator (in German)
+- Comments on the simulation every 60 seconds
+- Detects notable events (mass extinction, baby boom, ecosystem balance)
+- Vision mode: Sends a canvas screenshot to a vision model every 3 minutes
+- Doubles as Ollama keep-alive (prevents model unloading after 5 min idle)
 
 ### UI
 
-- **Minimap** (430x430) — klickbar zum Navigieren
-- **5 Populationsgraphen** (Prey, Omnivore, Predator, Food, Plants)
-- **Neural Network Visualizer** — zeigt das Gehirn der ausgewählten Kreatur
-- **Creature Inspector** — Age, Generation, Fitness, Kills, Splits, Brain-Komplexität, Traits
-- **Heatmap Overlay** — Tod/Fress-Hotspots (aktivierbar in Settings)
-- **HUD** — Ticks, Zeit, Frame-Time, Pause/Play/Speed, Settings-Button
-- **AI Commentary Panel** — deutsche Kommentare mit Timestamps
-- **Live Settings** — alle Balance-Parameter als Slider, persistiert in localStorage
-- **Genom Import/Export** — beste Genome als JSON speichern und laden
+- **Minimap** (430x430) — clickable to navigate
+- **5 Population Graphs** (Prey, Omnivore, Predator, Food, Plants)
+- **Neural Network Visualizer** — shows the selected creature's brain
+- **Creature Inspector** — Age, generation, fitness, kills, splits, brain complexity, traits (toxicity/resistance/defense)
+- **Heatmap Overlay** — death/eating hotspots (toggle in settings)
+- **HUD** — Ticks, time, frame time, pause/play/speed, settings button
+- **AI Commentary Panel** — timestamped AI observations
+- **Live Settings** — all balance parameters as sliders, persisted to localStorage
+- **Genome Import/Export** — save and load best genomes as JSON
 
-## Voraussetzungen
+## Prerequisites
 
 - **Node.js** >= 18
-- **Ollama** (optional, für AI-Features) mit `gemma3:12b` Modell
+- **Ollama** (optional, for AI features) with `gemma3:12b` model
 
 ```bash
-# Ollama installieren: https://ollama.ai
+# Install Ollama: https://ollama.ai
 ollama pull gemma3:12b
 ```
 
-## Installation & Start
+## Installation & Quick Start
 
 ```bash
 git clone https://github.com/githubUser79/life-simulator.git
@@ -116,7 +116,7 @@ npm install
 npm run dev
 ```
 
-Browser öffnen: `http://localhost:5173`
+Open browser: `http://localhost:5173`
 
 ### Production Build
 
@@ -125,72 +125,72 @@ npm run build
 npm run preview
 ```
 
-## Steuerung
+## Controls
 
-| Aktion | Eingabe |
+| Action | Input |
 |---|---|
-| **Kamera bewegen** | Maus ziehen |
-| **Zoomen** | Mausrad |
-| **Kreatur auswählen** | Klick auf Kreatur |
-| **Auswahl aufheben** | Escape oder Kamera ziehen |
-| **Pause/Play** | Leertaste oder HUD-Button |
-| **Settings öffnen** | "settings" Button im HUD |
-| **Minimap navigieren** | Klick auf Minimap |
+| **Pan camera** | Click and drag |
+| **Zoom** | Mouse wheel |
+| **Select creature** | Click on creature |
+| **Deselect** | Escape or drag camera |
+| **Pause/Play** | Spacebar or HUD button |
+| **Open settings** | "settings" button in HUD |
+| **Navigate minimap** | Click on minimap |
 
 ## Tech Stack
 
 - **TypeScript** + **Vite**
-- **PixiJS v8** — 2D Rendering
-- **Ollama** — Lokales LLM für AI Balancer und Kommentator
-- **NEAT** — NeuroEvolution of Augmenting Topologies (vereinfacht)
+- **PixiJS v8** — 2D rendering
+- **Ollama** — Local LLM for AI balancer and commentator
+- **NEAT** — NeuroEvolution of Augmenting Topologies (simplified)
 
-## Architektur
+## Architecture
 
 ```
 src/
-├── ai/                  # KI-Steuerung
-│   ├── AutoBalancer.ts  # Ökosystem-Balancer (Ollama)
-│   └── Commentator.ts   # Sarkastischer Kommentator + Vision
-├── entities/            # Spielobjekte
-│   ├── Entity.ts        # Basis-Klasse
-│   ├── Creature.ts      # Kreatur mit NN, Traits, Genealogie
-│   ├── Predator.ts      # Predator-Spezies
-│   ├── Omnivore.ts      # Omnivore-Spezies
-│   ├── Prey.ts          # Prey-Spezies
-│   ├── Plant.ts         # Pflanze mit Lebensdauer
-│   └── FoodDrop.ts      # Nahrungs-Drop
-├── neural/              # Neuronale Netzwerke
-│   ├── Genome.ts        # NEAT Genom + Crossover
-│   ├── NeuralNetwork.ts # Forward-Pass
-│   └── Evolution.ts     # Adaptive Mutation + Elitismus
-├── rendering/           # Visuelle Darstellung
-│   ├── CreatureRenderer.ts  # Blob-Rendering mit Lineage-Farben
+├── ai/                      # AI control
+│   ├── AutoBalancer.ts      # Ecosystem balancer (Ollama)
+│   └── Commentator.ts       # Sarcastic commentator + vision
+├── entities/                # Game objects
+│   ├── Entity.ts            # Base class
+│   ├── Creature.ts          # Creature with NN, traits, genealogy
+│   ├── Predator.ts          # Predator species
+│   ├── Omnivore.ts          # Omnivore species
+│   ├── Prey.ts              # Prey species
+│   ├── Plant.ts             # Plant with lifespan
+│   └── FoodDrop.ts          # Food drop
+├── neural/                  # Neural networks
+│   ├── Genome.ts            # NEAT genome + crossover
+│   ├── NeuralNetwork.ts     # Forward pass
+│   └── Evolution.ts         # Adaptive mutation + elitism
+├── rendering/               # Visual rendering
+│   ├── CreatureRenderer.ts  # Blob rendering with lineage colors
 │   ├── PlantRenderer.ts
 │   ├── FoodRenderer.ts
-│   ├── Heatmap.ts       # Tod/Fress-Overlay
-│   └── TerrainRenderer.ts  # Biome-Overlay
-├── simulation/          # Spiellogik
-│   ├── World.ts         # Hauptsimulation, Kollisionen, Balance
-│   ├── Raycasting.ts    # Sichtsystem + Tag/Nacht
-│   ├── SpatialGrid.ts   # Räumliche Optimierung
-│   ├── PheromoneGrid.ts # Duftspuren mit Diffusion
-│   └── TerrainGrid.ts   # Prozedurales Terrain
-├── ui/                  # Benutzeroberfläche
-│   ├── HUD.ts           # Ticks, Zeit, Buttons
-│   ├── Minimap.ts       # Klickbare Minimap
-│   ├── PopulationGraph.ts  # 5 Populationsgraphen
-│   ├── StatsPanel.ts    # Creature Inspector
-│   ├── NeuralNetViz.ts  # NN-Visualisierung
-│   ├── DevTools.ts      # Settings + AI Balancer UI
-│   └── CommentaryPanel.ts  # AI Kommentare
-├── config.ts            # Alle Konfigurationskonstanten
-└── main.ts              # Entry Point, Game Loop
+│   ├── Heatmap.ts           # Death/eating overlay
+│   └── TerrainRenderer.ts   # Biome overlay
+├── simulation/              # Game logic
+│   ├── World.ts             # Main simulation, collisions, balance
+│   ├── Raycasting.ts        # Vision system + day/night
+│   ├── SpatialGrid.ts       # Spatial optimization
+│   ├── PheromoneGrid.ts     # Scent trails with diffusion
+│   └── TerrainGrid.ts       # Procedural terrain
+├── ui/                      # User interface
+│   ├── HUD.ts               # Ticks, time, buttons
+│   ├── Minimap.ts           # Clickable minimap
+│   ├── PopulationGraph.ts   # 5 population graphs
+│   ├── StatsPanel.ts        # Creature inspector
+│   ├── NeuralNetViz.ts      # NN visualization
+│   ├── DevTools.ts          # Settings + AI balancer UI
+│   └── CommentaryPanel.ts   # AI commentary
+├── config.ts                # All configuration constants
+└── main.ts                  # Entry point, game loop
 ```
 
-## Lizenz
+## License
 
 MIT
 
 ---
 
-Erstellt mit TypeScript, PixiJS und Claude Code.
+Built with TypeScript, PixiJS, and [Claude Code](https://claude.ai/claude-code).
