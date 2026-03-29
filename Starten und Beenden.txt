@@ -1,0 +1,19 @@
+● Starten und Beenden
+
+  Starten
+
+  Im Verzeichnis life-simulator/life-simulator/ folgende Befehle ausführen:
+
+  npm install    # nur beim ersten Mal nötig
+  npm run dev    # startet den Vite Dev-Server
+
+  Dann im Browser die angezeigte URL öffnen (normalerweise http://localhost:5173).
+
+  Für einen Production-Build:
+  npm run build     # erstellt optimierten Build in dist/
+  npm run preview   # startet einen lokalen Server für den Build
+
+  Beenden
+
+  - Dev-Server stoppen: Im Terminal Ctrl + C drücken.
+  - Im Browser: Einfach den Tab/das Fenster schließen.
